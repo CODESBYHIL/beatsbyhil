@@ -6,189 +6,406 @@
   <title>beatsbyhil</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --cyan: #00ffe7;
+      --magenta: #ff2d9b;
+      --purple: #9b00ff;
+      --yellow: #f5ff00;
+      --bg: #030308;
+    }
+
     body {
       min-height: 100dvh;
+      background: var(--bg);
+      font-family: 'Share Tech Mono', monospace;
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #0a0a0a;
-      font-family: 'Inter', sans-serif;
-      color: #fff;
-      padding: 32px 16px;
+      padding: 40px 16px;
+      overflow-x: hidden;
+    }
+
+    /* scanline overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.18) 2px,
+        rgba(0,0,0,0.18) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* grid bg */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,231,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,231,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
     }
 
     .card {
+      position: relative;
+      z-index: 1;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 24px;
+      gap: 28px;
+    }
+
+    /* ── AVATAR ── */
+    .avatar-wrap {
+      position: relative;
     }
 
     .avatar {
-      width: 88px;
-      height: 88px;
+      width: 96px;
+      height: 96px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #7c3aed, #db2777);
+      background: var(--bg);
+      border: 2px solid var(--cyan);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: -1px;
-      flex-shrink: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--cyan);
+      text-shadow: 0 0 12px var(--cyan), 0 0 30px var(--cyan);
+      box-shadow:
+        0 0 0 1px var(--cyan),
+        0 0 20px rgba(0,255,231,0.3),
+        inset 0 0 20px rgba(0,255,231,0.05);
+      animation: avatar-pulse 3s ease-in-out infinite;
     }
 
+    @keyframes avatar-pulse {
+      0%, 100% { box-shadow: 0 0 0 1px var(--cyan), 0 0 20px rgba(0,255,231,0.3), inset 0 0 20px rgba(0,255,231,0.05); }
+      50%       { box-shadow: 0 0 0 1px var(--cyan), 0 0 40px rgba(0,255,231,0.5), inset 0 0 30px rgba(0,255,231,0.1); }
+    }
+
+    .avatar-wrap::before,
+    .avatar-wrap::after {
+      content: 'BH';
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .avatar-wrap::before {
+      color: var(--magenta);
+      animation: glitch-1 4s infinite;
+      opacity: 0;
+    }
+
+    .avatar-wrap::after {
+      color: var(--cyan);
+      animation: glitch-2 4s infinite;
+      opacity: 0;
+    }
+
+    @keyframes glitch-1 {
+      0%, 89%, 100% { opacity: 0; transform: translate(-50%, -50%); }
+      90% { opacity: 0.8; transform: translate(calc(-50% - 4px), -50%); clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%); }
+      92% { opacity: 0; }
+      94% { opacity: 0.6; transform: translate(calc(-50% + 3px), calc(-50% + 2px)); clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); }
+      96% { opacity: 0; }
+    }
+
+    @keyframes glitch-2 {
+      0%, 91%, 100% { opacity: 0; transform: translate(-50%, -50%); }
+      92% { opacity: 0.7; transform: translate(calc(-50% + 5px), calc(-50% - 2px)); clip-path: polygon(0 50%, 100% 50%, 100% 65%, 0 65%); }
+      94% { opacity: 0; }
+    }
+
+    /* ── NAME ── */
     .profile {
+      text-align: center;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      text-align: center;
+      gap: 8px;
     }
 
     .name {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -0.3px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      color: #fff;
+      text-transform: uppercase;
+      position: relative;
+      display: inline-block;
+      text-shadow: 0 0 8px var(--cyan);
+      animation: name-glitch 6s infinite;
+    }
+
+    @keyframes name-glitch {
+      0%, 94%, 100% { text-shadow: 0 0 8px var(--cyan); transform: none; }
+      95% {
+        text-shadow: -3px 0 var(--magenta), 3px 0 var(--cyan);
+        transform: skew(-2deg);
+      }
+      96% { text-shadow: 3px 0 var(--magenta), -3px 0 var(--cyan); transform: skew(1deg); }
+      97% { text-shadow: 0 0 8px var(--cyan); transform: none; }
+    }
+
+    .name::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0; top: 0;
+      color: var(--magenta);
+      clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+      animation: name-slice 6s infinite;
+      opacity: 0;
+    }
+
+    @keyframes name-slice {
+      0%, 94%, 100% { opacity: 0; transform: none; }
+      95% { opacity: 0.9; transform: translateX(-4px); }
+      96% { opacity: 0; }
     }
 
     .bio {
-      font-size: 0.875rem;
-      color: #a1a1aa;
-      line-height: 1.5;
+      font-size: 0.75rem;
+      color: rgba(0,255,231,0.5);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
     }
 
+    /* ── CORNER BRACKETS ── */
+    .bracket {
+      position: absolute;
+      width: 12px; height: 12px;
+    }
+    .bracket-tl { top: -6px; left: -6px; border-top: 2px solid var(--cyan); border-left: 2px solid var(--cyan); }
+    .bracket-tr { top: -6px; right: -6px; border-top: 2px solid var(--cyan); border-right: 2px solid var(--cyan); }
+    .bracket-bl { bottom: -6px; left: -6px; border-bottom: 2px solid var(--cyan); border-left: 2px solid var(--cyan); }
+    .bracket-br { bottom: -6px; right: -6px; border-bottom: 2px solid var(--cyan); border-right: 2px solid var(--cyan); }
+
+    /* ── LINKS ── */
     .links {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
 
     .link-btn {
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
       width: 100%;
       padding: 16px 20px;
-      border-radius: 14px;
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
+      background: rgba(0,255,231,0.03);
+      border: 1px solid rgba(0,255,231,0.2);
       color: #fff;
       text-decoration: none;
+      font-family: 'Share Tech Mono', monospace;
       font-size: 0.9375rem;
-      font-weight: 600;
-      transition: background 0.15s, border-color 0.15s, transform 0.1s;
-      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+      overflow: hidden;
+    }
+
+    .link-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
     }
 
     .link-btn:hover {
-      background: #222;
-      border-color: #3a3a3a;
-      transform: translateY(-1px);
+      border-color: var(--cyan);
+      background: rgba(0,255,231,0.07);
     }
 
-    .link-btn:active {
-      transform: translateY(0);
+    .link-btn:hover::before { opacity: 1; }
+
+    /* per-platform hover glow */
+    .link-btn.tiktok:hover    { border-color: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.15), inset 0 0 20px rgba(255,255,255,0.03); }
+    .link-btn.ig:hover        { border-color: var(--magenta); box-shadow: 0 0 20px rgba(255,45,155,0.25), inset 0 0 20px rgba(255,45,155,0.05); }
+    .link-btn.soundcloud:hover{ border-color: #ff5500; box-shadow: 0 0 20px rgba(255,85,0,0.25), inset 0 0 20px rgba(255,85,0,0.05); }
+
+    /* scan line sweep on hover */
+    .link-btn::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+      transition: left 0.4s ease;
     }
+
+    .link-btn:hover::after { left: 150%; }
 
     .link-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
+      width: 38px;
+      height: 38px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      position: relative;
     }
 
-    .link-icon svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    .link-icon.tiktok      { background: #111; }
-    .link-icon.ig          { background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af, #515bd4); }
-    .link-icon.soundcloud  { background: #ff5500; }
+    .link-icon svg { width: 22px; height: 22px; }
 
     .link-label {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .link-name {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.8125rem;
     }
 
     .link-sub {
-      display: block;
-      font-size: 0.75rem;
-      font-weight: 400;
-      color: #71717a;
-      margin-top: 1px;
+      font-size: 0.7rem;
+      color: rgba(0,255,231,0.45);
+      letter-spacing: 0.05em;
     }
 
-    .footer {
-      font-size: 0.75rem;
-      color: #3f3f46;
+    .link-arrow {
+      font-size: 1rem;
+      color: rgba(0,255,231,0.3);
+      transition: color 0.2s, transform 0.2s;
     }
+
+    .link-btn:hover .link-arrow { color: var(--cyan); transform: translateX(3px); }
+
+    /* TikTok icon color */
+    .link-btn.tiktok .link-icon svg { filter: drop-shadow(0 0 4px #fff); }
+    .link-btn.ig .link-icon svg     { filter: drop-shadow(0 0 4px var(--magenta)); }
+    .link-btn.soundcloud .link-icon svg { filter: drop-shadow(0 0 4px #ff5500); }
+
+    /* ── FOOTER ── */
+    .footer {
+      font-size: 0.65rem;
+      color: rgba(0,255,231,0.2);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    /* ── NOISE flash ── */
+    @keyframes noise {
+      0%   { opacity: 0; }
+      97%  { opacity: 0; }
+      98%  { opacity: 0.04; }
+      99%  { opacity: 0; }
+      99.5%{ opacity: 0.06; }
+      100% { opacity: 0; }
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      pointer-events: none;
+      z-index: 99;
+      animation: noise 3s steps(1) infinite;
+    }
+
+    /* active press */
+    .link-btn:active { transform: scale(0.98); }
   </style>
 </head>
 <body>
+
+  <div class="noise"></div>
+
   <div class="card">
 
-    <div class="avatar">bh</div>
+    <div class="avatar-wrap">
+      <div class="avatar">BH</div>
+    </div>
 
     <div class="profile">
-      <span class="name">beatsbyhil</span>
-      <span class="bio">producer · beats for sale · custom orders open</span>
+      <span class="name" data-text="BEATSBYHIL">BEATSBYHIL</span>
+      <span class="bio">producer &nbsp;·&nbsp; beats for sale &nbsp;·&nbsp; custom orders open</span>
     </div>
 
     <div class="links">
 
       <!-- TikTok -->
-      <a class="link-btn" href="https://www.tiktok.com/@beatsbyhil_" target="_blank" rel="noopener">
-        <div class="link-icon tiktok">
+      <a class="link-btn tiktok" href="https://www.tiktok.com/@beatsbyhil_" target="_blank" rel="noopener">
+        <div class="link-icon">
           <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
             <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
           </svg>
         </div>
         <div class="link-label">
-          TikTok
+          <span class="link-name">TikTok</span>
           <span class="link-sub">@beatsbyhil_</span>
         </div>
+        <span class="link-arrow">›</span>
       </a>
 
       <!-- Instagram -->
-      <a class="link-btn" href="https://www.instagram.com/beatsbyhil_/" target="_blank" rel="noopener">
-        <div class="link-icon ig">
+      <a class="link-btn ig" href="https://www.instagram.com/beatsbyhil_/" target="_blank" rel="noopener">
+        <div class="link-icon">
           <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
           </svg>
         </div>
         <div class="link-label">
-          Instagram
+          <span class="link-name">Instagram</span>
           <span class="link-sub">@beatsbyhil_</span>
         </div>
+        <span class="link-arrow">›</span>
       </a>
 
       <!-- SoundCloud -->
-      <a class="link-btn" href="https://soundcloud.com/beatsbyhil" target="_blank" rel="noopener">
-        <div class="link-icon soundcloud">
+      <a class="link-btn soundcloud" href="https://soundcloud.com/beatsbyhil" target="_blank" rel="noopener">
+        <div class="link-icon">
           <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
             <path d="M1.175 12.225c-.015.12 0 .24.044.344l1.225 4.5-.044-.344c-.015.12 0 .24.044.344L1.175 12.225zm0 0c-.015.12-.015.225 0 .344v-.344zm.044.688l-.044-.344.044.344zM11.99 6.984c-.27 0-.533.024-.789.067C10.67 4.87 8.888 3.6 6.825 3.6c-2.543 0-4.606 2.063-4.606 4.606 0 .134.006.267.018.398C.9 8.942 0 10.135 0 11.55c0 1.718 1.393 3.113 3.113 3.113h8.876c1.718 0 3.113-1.395 3.113-3.113 0-1.718-1.395-3.113-3.113-3.113v.547zm0 0c1.418 0 2.566 1.148 2.566 2.566S13.408 12.116 11.99 12.116H3.113C1.695 12.116.547 10.968.547 9.55c0-1.17.785-2.16 1.867-2.46-.012-.133-.018-.267-.018-.402 0-2.244 1.815-4.059 4.059-4.059 1.945 0 3.572 1.365 3.987 3.187.248-.044.503-.066.762-.066 1.418 0 2.566 1.148 2.566 2.566v-.001h-.78v.001zm0 .547v-.547"/>
           </svg>
         </div>
         <div class="link-label">
-          SoundCloud
+          <span class="link-name">SoundCloud</span>
           <span class="link-sub">beatsbyhil</span>
         </div>
+        <span class="link-arrow">›</span>
       </a>
 
     </div>
 
-    <span class="footer">beatsbyhil · 2026</span>
+    <span class="footer">// beatsbyhil &nbsp;·&nbsp; 2026</span>
 
   </div>
 </body>
